@@ -96,14 +96,19 @@ class MirageComicGUI:
         
         ttk.Label(file_frame, text="📁 选择隐藏图像", style='Header.TLabel').pack(anchor='w')
         
-        # 批量选择按钮
+        # 选择按钮组
         button_frame = tk.Frame(file_frame, bg='#ffffff')
         button_frame.pack(fill='x', pady=(5, 0))
         
-        select_btn = ttk.Button(button_frame, text="批量选择图片", 
-                               command=self.select_hidden_images,
-                               style='Action.TButton')
-        select_btn.pack(side='left')
+        select_files_btn = ttk.Button(button_frame, text="选择图片文件", 
+                                     command=self.select_hidden_images,
+                                     style='Action.TButton')
+        select_files_btn.pack(side='left')
+        
+        select_folder_btn = ttk.Button(button_frame, text="选择图片文件夹", 
+                                      command=self.select_image_folder,
+                                      style='Action.TButton')
+        select_folder_btn.pack(side='left', padx=(5, 0))
         
         clear_selection_btn = ttk.Button(button_frame, text="清除选择", 
                                         command=self.clear_selection)
@@ -167,22 +172,6 @@ class MirageComicGUI:
                                            variable=self.create_zip,
                                            onvalue=True, offvalue=False)
         self.zip_checkbox.pack(anchor='w')
-        
-        # 质量说明
-        info_text = """
-💡 使用说明:
-• 批量选择黑白图片作为隐藏图
-• 生成的图像在白底看起来是空白的
-• 在黑底下会显示隐藏的内容
-• 输出格式自动为PNG（保持透明度）
-• 可选择打包为ZIP压缩文件
-        """
-        
-        info_label = tk.Label(settings_frame, text=info_text,
-                             font=('Arial', 8), justify='left',
-                             bg='#f8f8ff', fg='#444444',
-                             relief='flat', bd=5, padx=10, pady=8)
-        info_label.pack(fill='x', pady=(15, 0))
         
     def create_action_buttons(self, parent):
         """创建操作按钮"""
@@ -279,6 +268,32 @@ class MirageComicGUI:
             self.current_preview_index = 0
             self.update_preview()
             self.update_status(f"已选择 {len(filenames)} 个文件")
+            
+    def select_image_folder(self):
+        """选择包含图片的文件夹"""
+        folder = filedialog.askdirectory(
+            title="选择包含图片的文件夹"
+        )
+        
+        if folder:
+            try:
+                # 获取文件夹中的所有图片文件
+                image_files = []
+                for f in os.listdir(folder):
+                    if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')):
+                        image_files.append(os.path.join(folder, f))
+                
+                if image_files:
+                    self.hidden_img_paths = image_files
+                    self.update_file_list()
+                    self.current_preview_index = 0
+                    self.update_preview()
+                    self.update_status(f"从文件夹中加载 {len(image_files)} 个图片文件")
+                else:
+                    messagebox.showwarning("警告", "所选文件夹中没有找到支持的图片文件！\n支持格式：PNG, JPG, JPEG, BMP, GIF")
+                    
+            except Exception as e:
+                messagebox.showerror("错误", f"读取文件夹时出错: {str(e)}")
             
     def clear_selection(self):
         """清除文件选择"""
