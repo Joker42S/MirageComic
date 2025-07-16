@@ -18,7 +18,7 @@ class MirageComicGUI:
         self.setup_styles()
         
         # 初始化变量
-        self.hidden_img_paths = []  # 改为列表以支持批量
+        self.hidden_img_paths = []
         self.output_folder = tk.StringVar(value=os.getcwd())  # 输出文件夹
         self.create_zip = tk.BooleanVar(value=False)  # 是否创建压缩包
         self.preview_img = None
@@ -28,7 +28,7 @@ class MirageComicGUI:
         self.create_widgets()
         
     def setup_styles(self):
-        """设置现代化的样式"""
+        
         style = ttk.Style()
         style.theme_use('clam')
         
@@ -53,10 +53,10 @@ class MirageComicGUI:
         title_frame = tk.Frame(self.root, bg='#f0f0f0', pady=10)
         title_frame.pack(fill='x')
         
-        title_label = ttk.Label(title_frame, text="🎭 批量幻影坦克生成器", style='Title.TLabel')
+        title_label = ttk.Label(title_frame, text="幻影漫画生成器", style='Title.TLabel')
         title_label.pack()
         
-        subtitle_label = ttk.Label(title_frame, text="为黑白漫画创建批量幻影图", 
+        subtitle_label = ttk.Label(title_frame, text="批量生成表图为纯白色的幻影图", 
                                  font=('Arial', 10, 'italic'),
                                  background='#f0f0f0', foreground='#666666')
         subtitle_label.pack()
@@ -94,7 +94,7 @@ class MirageComicGUI:
         file_frame = tk.Frame(parent, bg='#ffffff', pady=15, padx=15)
         file_frame.pack(fill='x')
         
-        ttk.Label(file_frame, text="📁 选择隐藏图像", style='Header.TLabel').pack(anchor='w')
+        ttk.Label(file_frame, text="📁 选择里像", style='Header.TLabel').pack(anchor='w')
         
         # 选择按钮组
         button_frame = tk.Frame(file_frame, bg='#ffffff')
@@ -179,7 +179,7 @@ class MirageComicGUI:
         button_frame.pack(fill='x', side='bottom')
         
         # 生成按钮
-        self.generate_btn = ttk.Button(button_frame, text="🎨 批量生成幻影坦克",
+        self.generate_btn = ttk.Button(button_frame, text="🎨 批量生成幻影图",
                                       command=self.generate_phantoms,
                                       style='Action.TButton')
         self.generate_btn.pack(fill='x', pady=(0, 10))
@@ -228,7 +228,7 @@ class MirageComicGUI:
         """显示默认预览提示"""
         self.preview_canvas.delete("all")
         self.preview_canvas.create_text(
-            250, 200, text="请选择隐藏图像\n预览将显示在这里",
+            250, 200, text="请选择里图\n预览将显示在这里",
             font=('Arial', 12), fill='#cccccc', justify='center'
         )
         self.image_info_label.config(text="0/0")
@@ -249,7 +249,7 @@ class MirageComicGUI:
         self.progress.pack(side='right', padx=10, pady=2)
         
     def select_hidden_images(self):
-        """批量选择隐藏图像"""
+        """批量选择里图"""
         file_types = [
             ("图像文件", "*.png *.jpg *.jpeg *.bmp *.gif"),
             ("PNG文件", "*.png"),
@@ -258,7 +258,7 @@ class MirageComicGUI:
         ]
         
         filenames = filedialog.askopenfilenames(
-            title="批量选择隐藏图像",
+            title="批量选择里图",
             filetypes=file_types
         )
         
@@ -399,9 +399,9 @@ class MirageComicGUI:
             messagebox.showerror("错误", f"无法加载图像: {str(e)}")
             
     def generate_phantoms(self):
-        """批量生成幻影坦克"""
+        """批量生成幻影图"""
         if not self.hidden_img_paths:
-            messagebox.showwarning("警告", "请先选择隐藏图像！")
+            messagebox.showwarning("警告", "请先选择里图！")
             return
             
         if not self.output_folder.get():
@@ -411,7 +411,7 @@ class MirageComicGUI:
         # 在新线程中生成，避免界面冻结
         self.generate_btn.configure(state='disabled', text="正在批量生成...")
         self.progress.configure(mode='determinate', maximum=len(self.hidden_img_paths), value=0)
-        self.update_status("开始批量生成幻影坦克...")
+        self.update_status("开始批量生成幻影图...")
         
         def generate_task():
             try:
@@ -422,7 +422,7 @@ class MirageComicGUI:
                     filename = os.path.basename(img_path)
                     self.root.after(0, lambda: self.update_status(f"正在处理: {filename}"))
                     
-                    # 生成幻影坦克
+                    # 生成幻影图
                     result = create_simple_phantom_tank(img_path)
                     
                     # 生成输出文件名
@@ -466,7 +466,7 @@ class MirageComicGUI:
     def generation_complete(self, output_files, zip_file):
         """生成完成"""
         self.progress.configure(value=0)
-        self.generate_btn.configure(state='normal', text="🎨 批量生成幻影坦克")
+        self.generate_btn.configure(state='normal', text="🎨 批量生成幻影图")
         
         if zip_file:
             message = f"批量生成完成！\n共生成 {len(output_files)} 个文件\n已打包为: {os.path.basename(zip_file)}"
@@ -483,7 +483,7 @@ class MirageComicGUI:
     def generation_error(self, error_msg):
         """生成错误"""
         self.progress.configure(value=0)
-        self.generate_btn.configure(state='normal', text="🎨 批量生成幻影坦克")
+        self.generate_btn.configure(state='normal', text="🎨 批量生成幻影图")
         self.update_status("批量生成失败")
         messagebox.showerror("错误", f"批量生成失败: {error_msg}")
         
