@@ -94,7 +94,7 @@ class MirageComicGUI:
         file_frame = tk.Frame(parent, bg='#ffffff', pady=15, padx=15)
         file_frame.pack(fill='x')
         
-        ttk.Label(file_frame, text="📁 选择里像", style='Header.TLabel').pack(anchor='w')
+        ttk.Label(file_frame, text="📁 选择里图", style='Header.TLabel').pack(anchor='w')
         
         # 选择按钮组
         button_frame = tk.Frame(file_frame, bg='#ffffff')
